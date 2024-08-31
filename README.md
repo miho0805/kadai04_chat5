@@ -8,7 +8,6 @@
 
 ## ③DEMO
 
-デプロイしている場合はURLを記入（任意）https://miho0805.github.io/kadai03_memo6/
 
 ## ④作ったアプリケーション用のIDまたはPasswordがある場合
 
