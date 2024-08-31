@@ -1,0 +1,38 @@
+
+/* 背景 */
+body {
+    margin: 0px;
+    background-color: rgb(252, 255, 92);
+    text-align: center;
+}
+
+input {
+    background-color:#1cfca2;
+
+}
+
+textarea {
+    background-color:honeydew;
+
+}
+
+div {
+    padding: 10px;
+}
+
+p {
+    background-color:#ed53fe;
+    border-radius: 30px;
+}
+
+button {
+    /* 色 */
+    background-color: rgb(67, 114, 255);
+    /* 横 */
+    width: 10%;
+    /* 縦 */
+    height: 30px;
+    /* 丸 */
+    border-radius: 30px;
+    
+}

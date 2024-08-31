@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="./css/style.css">
+    <title>Firebase_version9_RealtimeDB(G'sACADEMY初学者用サンプル)</title>
+</head>
+
+<body>
+
+    <!-- コンテンツ表示画面 -->
+
+    <!-- トップ画像 -->
+    <img src="chat.jpg" width="100%" alt="みんなでチャット、しチャおット。"><br>
+
+    <div>
+       
+        <div> わたしの名前は：<input type="text" id="uname"> </div>
+
+
+        <div>
+            <textarea id="text" cols="60" rows="10"></textarea>
+            <br>
+            <button id="send">送信</button>
+        </div>
+
+        <div id="output" style="overflow: auto; height: 300px;"></div>
+
+        <label> あの日のチャットへワープ <input type="datetime-local" id="dl"></label>
+
+    </div>
+    <!--/ コンテンツ表示画面 -->
+
+
+
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- JQuery -->
+
+
+
+
+    <!--** 以下Firebase **-->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import { getDatabase, ref, push, set, update, remove, onChildAdded, onChildChanged, onChildRemoved }
+            from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            //apiKey: "AIzaSyCZMJDv6N3HKYnRGqo32H6Cw32eIN-Y_mQ",
+            authDomain: "sample3-ae3a4.firebaseapp.com",
+            projectId: "sample3-ae3a4",
+            storageBucket: "sample3-ae3a4.appspot.com",
+            messagingSenderId: "241917683894",
+            appId: "1:241917683894:web:85cf829071d8e129209e17"
+        };
+
+
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const dbRef = ref(db, "chat");
+
+
+        //日付
+        //console.log(now.toLocaleString());
+
+
+        //データ登録
+        $("#send").on("click", function () {
+            const msg = {
+                uname: $("#uname").val(),
+                text: $("#text").val(),
+               time: "2024-09-01"
+            }
+            const newPostRef = push(dbRef); //ユニークキーを生成
+            set(newPostRef, msg);
+        });
+
+
+
+
+        onChildAdded(dbRef, function (date) {
+            const msg = date.val();
+            const key = date.key; //ユニークキー削除、更新に必須！
+            const link = msg.links;
+            const time = msg.time;
+
+            let h = '<p id="' + key + '">';
+            h += msg.time;
+            h += '<br>';
+            h += msg.uname;
+            h += '<br>';
+            h += '<span contentEditable="true" id="' + key + '_update">' + msg.text + '</span>';
+            h += '<span class="remove" data-key="' + key + '">🚮</span>'
+            h += '<span class="update" data-key="' + key + '">🆙</span>'
+            h += '</p>';
+            $("#output").prepend(h); //#outputの最後に追加
+        });
+
+
+
+
+        //削除イベント
+        $("#output").on("click", ".remove", function () {
+            const key = $(this).attr("data-key");
+            const remove_item = ref(db, "chat/" + key);
+            remove(remove_item); //データ削除関数
+        });
+
+
+
+
+
+        //更新イベント
+        $("#output").on("ciick", ".update", function () {
+            const key = $(this).atte("data-key");
+            update(ref(db, "chat/" + key), {
+                text: $("#" + key + '_update').html()
+            });
+        });
+
+
+
+
+        //削除処理実行イベント発生
+        onChildRemoved(dbRef, (data) => {
+            $("#" + data.key).remove();
+        });
+
+
+
+
+        //更新処理実行イベント発生
+        onChildChanged(dbRef, (date) => {
+            $("#" + data.key + '_update').html(data.val().text);
+            $("#" + data.key + '_update').fadeOut(800).fadeIn(800);
+        });
+
+    </script>
+
+
+</body>
+
+</html>
